@@ -1,0 +1,10 @@
+enabled: true
+debug: false
+cron_time: '0 1 * * 6'
+only_broken: '1'
+check_internal: '1'
+check_external: '1'
+timeout: '2'
+user_agent: curl/7.74.0
+email_report: '0'
+include_current_host: 'me.com'

@@ -1,0 +1,112 @@
+name: Linkchecker
+slug: linkchecker
+type: plugin
+version: 0.1.0
+description: Checks for broken links
+icon: link
+author:
+  name: Peter Swinnen
+  email: info@peterswinnen.be
+homepage: https://github.com/peterswinnen/grav-plugin-linkchecker
+demo: https://www.peterswinnen.be
+keywords: grav, plugin, linkchecker
+bugs: https://github.com/peterswinnen/grav-plugin-linkchecker/issues
+docs: https://github.com/peterswinnen/grav-plugin-linkchecker/blob/develop/README.md
+license: MIT
+
+dependencies:
+  - { name: grav, version: '>=1.6.0' }
+
+form:
+  validation: strict
+  fields:
+    enabled:
+      type: toggle
+      label: Plugin status
+      highlight: 1
+      default: 1
+      options:
+        1: Enabled
+        0: Disabled
+      validate:
+        type: bool
+
+    debug:
+      type: toggle
+      label: Debug
+      highlight: 0
+      default: 0
+      options:
+        1: Enabled
+        0: Disabled
+      validate:
+        type: bool
+
+    only_broken:
+      type: toggle
+      label: List Only Broken Links
+      highlight: 1
+      default: 1
+      options:
+        1: Enabled
+        0: Disabled
+      validate:
+        type: bool
+
+    check_internal:
+      type: toggle
+      label: Check Internal Links
+      options:
+        1: Enabled
+        0: Disabled
+      highlight: 1
+      default: 1
+      validate:
+        type: bool
+
+    check_external:
+      type: toggle
+      label: Check External Links
+      options:
+        1: Enabled
+        0: Disabled
+      highlight: 1
+      default: 1
+      validate:
+        type: bool
+
+    cron_time:
+      type: cron
+      label: PLUGIN_ADMIN.SCHEDULER_RUNAT
+      help: PLUGIN_ADMIN.SCHEDULER_RUNAT_HELP
+      default: "30 0 * * 5"
+      validate:
+        required: true
+
+    timeout:
+      type: number
+      label: Timeout
+      help: curl timeout in seconds
+      default: 2
+      validate:
+        required: true
+
+    user_agent:
+      type: text
+      label: User Agent
+      help: curl User Agent
+      default: curl/7.74.0
+      validate:
+        required: true
+
+    email_report:
+      type: text
+      label: Email Report to
+      help: Comma separated List of Email Addresses to send Report to when triggered by Scheduler. Leave blank to not send Email Reports.
+      placeholder: 'john.doe@me.com'
+
+    include_current_host:
+      type: text
+      label: Include Link to Host
+      help: Add direct link to this host in Email Report.
+      placeholder: 'me.com'

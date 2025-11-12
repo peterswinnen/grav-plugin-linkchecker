@@ -1,0 +1,53 @@
+{% if authorize(['admin.plugins', 'admin.super']) %}
+<div id="linkchecker" class="dashboard-item" style="width:100%">
+  <div class="button-bar" style="margin-bottom:10px;">
+    <button class="button" id="linkchecker-recheck">
+      <i class="fa fa-refresh"></i> Re-check Links
+    </button>
+  </div>
+
+  <h1><i class="fa fa-link"></i> Broken Links</h1>
+  <div id="linkchecker-message-box"></div>
+
+  {% if broken_links is empty %}
+    <p><strong>No broken links 🎉</strong></p>
+  {% else %}
+    <table class="table dashboard-table">
+      <thead>
+        <tr>
+          <th>URL</th>
+          <!--<th>Status</th>-->
+          <th>Found in</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for item in broken_links|slice(0,10) %}
+        <tr>
+          <td><a href="{{ item.url }}" target="_blank">{{ item.url }}</a></td>
+          <!--<th><td>{{ item.status }}</td>-->
+          <td>{% if item.type is sameas('page') %}<a href="/admin/pages{{ item.page }}"
+              {% else %} <a href="/admin/plugins/pswadditions"
+              {% endif %} target="_blank">{{ item.page }}</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% if broken_links|length > 10 %}
+      <p>…and {{ broken_links|length - 10 }} more.</p>
+    {% endif %}
+  {% endif %}
+</div>
+{% endif %}
+
+<script>
+document.getElementById('linkchecker-recheck').addEventListener('click', function() {
+  document.getElementById('linkchecker-message-box').innerHTML = 'Checking Links can take a while. Please remain patient while waiting for the Dashboard to refresh.';
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/linkchecker', true);
+  xhr.onload = function () {
+    location.reload();
+    document.getElementbyId("linkchecker-message-box").innerHTML = "";
+  };
+  xhr.send();
+});
+</script>

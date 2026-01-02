@@ -1,6 +1,8 @@
 # Linkchecker Plugin
 
-The **Linkchecker** Plugin is an extension for [Grav CMS](https://github.com/getgrav/grav). It checks your site for broken links
+**This README.md file should be modified to describe the features, installation, configuration, and general usage of the plugin.**
+
+The **Linkchecker** Plugin is an extension for [Grav CMS](https://github.com/getgrav/grav). Checks for broken links
 
 ## Installation
 
@@ -35,23 +37,20 @@ Before configuring this plugin, you should copy the `user/plugins/linkchecker/li
 Here is the default configuration and an explanation of available options:
 
 ```yaml
-enabled: true                  # enables/disables the plugin
-debug: false                   # enables/disables plugin debug mode
-cron_time: '0 1 * * 6'         #  when to schedule the plugin
-only_broken: '1'               # show only broken links in Dashboard pane
-check_internal: '1'            # check internal (in-site) links
-check_external: '1'            # check external (out of site) links
-timeout: '2'                   # how long to wait for an answer when checking links
-user_agent: curl/7.74.0        # html user agent to use when checking
-email_report: '0'              # enable/disable sending email report of links
-include_current_host: 'me.com' # hostname of your site
+enabled: true
 ```
 
 Note that if you use the Admin Plugin, a file with your configuration named linkchecker.yaml will be saved in the `user/config/plugins/`-folder once the configuration is saved in the Admin.
 
 ## Usage
 
-1. Configure Linkchecker on /admin/plugins/linkchecker.
-2. Enable Broken Links Widget at /admin/plugins/admin
-3. Find the Broken Links pane at /admin/dashboard. This pane shows the result of the last Scheduled check. You can click the Re-check Links button to force a recheck.
+**Describe how to use the plugin.**
+
+## Credits
+
+**Did you incorporate third-party code? Want to thank somebody?**
+
+## To Do
+
+- [ ] Future plans, if any
 

@@ -138,6 +138,42 @@ class LinkcheckerPlugin extends Plugin
         return $content;
     }
 	
+	private static function extractLinksFromMarkdown($header, $checker, $debug): array
+	{
+		$grav = Grav::instance();
+		$links = array();
+		foreach ($header as $text) {
+			if (is_array($text)) {
+				$header_links = static::extractLinksFromMarkdown($text, $checker, $debug);
+				if (isset($header_links)) {
+					if (is_array($header_links)) $links = $links + $header_links;
+					else $links = $links + array($header_links);
+				}
+			}
+			else {
+		        if ($debug) $grav['log']->debug('Extracting links from header ' . $text);
+				$content = static::$Parsedown->text($text);
+				$text_without_quote = str_replace('"', "", $content);
+		        if ($debug) $grav['log']->debug('Parsing links from header ' . $text_without_quote);
+				$header_links = $checker->extractLinks($text_without_quote);
+				if (isset($header_links)) {
+					if (is_array($header_links)) {
+						$links = $links + $header_links;
+						foreach ($header_links as $item) {
+							if ($debug) $grav['log']->debug('Found link ' . $item);
+						}
+					}
+					else {
+						$links = $links + array($header_links);	
+						if ($debug) $grav['log']->debug('Found link ' . $header_links);
+						}
+				}
+			}
+			//if ($debug) $grav['log']->debug('Extracted links from header ' . $text . ' value '. $links);
+		}
+		return $links;
+	}
+	
     public static function runScheduledCheck(): string
     {
         $grav = Grav::instance();
@@ -160,8 +196,14 @@ class LinkcheckerPlugin extends Plugin
             //if ($debug) $grav['log']->debug('Checking links on page '. $page->title());
             $html = $page->content();
             $links = $checker->extractLinks($html);
+			$headers = (array)$page->header();
+			foreach ($headers as $header) {
+				if (!is_array($header))$temp = array($header);
+				else $temp = $header;
+				$links = $links + static::extractLinksFromMarkdown($temp, $checker, $debug);
+			}
             if ($links == []) continue; 
-            if ($debug) $grav['log']->debug('Found links ' . implode(', ', $links) . ' on page '. $page->title());
+            //if ($debug) $grav['log']->debug('Found links ' . implode(', ', $links) . ' on page '. $page->title());
             foreach ($links as $url) {
                 $isexternal = str_starts_with($url, 'http') ? true : false;
                 if ($isexternal) {
@@ -179,11 +221,11 @@ class LinkcheckerPlugin extends Plugin
         //scan urls in text macros
         $config = $grav['config']->get('plugins.pswadditions');
         foreach ($config['psw_macros'] as $macro => $value) {
-            if ($debug) $grav['log']->debug('Checking links in macro ' . $macro . ' value '. $value);
+            //if ($debug) $grav['log']->debug('Checking links in macro ' . $macro . ' value '. $value);
             $html = static::doApplyMarkdown($value);
             $links = $checker->extractLinks($html);
             if ($links == []) continue; 
-            if ($debug) $grav['log']->debug('Found links ' . implode(', ', $links) . ' in macro ' . $macro . ' value ' . $html);
+            //if ($debug) $grav['log']->debug('Found links ' . implode(', ', $links) . ' in macro ' . $macro . ' value ' . $html);
             foreach ($links as $url) {
                 $isexternal = str_starts_with($url, 'http') ? true : false;
                 if ($isexternal) {
